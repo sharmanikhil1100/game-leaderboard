@@ -6,10 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LeaderboardModel {
-    public String id;
-    public String gameId;
-    public String userId;
-    public int score;
-    public int rank;
-
+    private String id;
+    private String gameId;
+    private String userId;
+    private int score;
+    private int rank;
 }
