@@ -6,5 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class LeaderboardController {
-    public LeaderboardController() {}
+    public LeaderboardController() {
+
+    }
 }
