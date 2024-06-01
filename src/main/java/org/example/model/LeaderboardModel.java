@@ -1,11 +1,15 @@
 package org.example.model;
 
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class LeaderboardModel {
-    public UUID id;
-    public UUID gameId;
-    public UUID userId;
+    public String id;
+    public String gameId;
+    public String userId;
     public int score;
     public int rank;
+
 }
