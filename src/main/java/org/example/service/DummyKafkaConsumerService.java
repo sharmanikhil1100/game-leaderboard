@@ -13,8 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class DummyKafkaConsumer {
-    private final Logger logger = LoggerFactory.getLogger(DummyKafkaConsumer.class);
+public class DummyKafkaConsumerService {
+    private final Logger logger = LoggerFactory.getLogger(DummyKafkaConsumerService.class);
 
     @Autowired
     private FileIOService fileIOService;
@@ -25,7 +25,7 @@ public class DummyKafkaConsumer {
     @Value("${app_config.leaderboard_file_path}")
     private String leaderboardFilePath;
 
-    public DummyKafkaConsumer() {
+    public DummyKafkaConsumerService() {
         startConsumer();
     }
 
