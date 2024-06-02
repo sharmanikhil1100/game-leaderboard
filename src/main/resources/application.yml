@@ -1,0 +1,13 @@
+redis:
+  hostname: "localhost"
+  port: 6379
+  username: "root"
+  password: "root"
+
+server:
+  port: 8080
+
+app_config:
+  leaderboard_file_path: "src/main/resources/LeaderboardData.json"
+  leaderboard_key: "leaderboard"
+  leaderboard_top5: 5

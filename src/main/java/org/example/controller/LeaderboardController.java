@@ -4,6 +4,7 @@ import org.example.model.LeaderboardModel;
 import org.example.service.FileIOService;
 import org.example.service.LeaderboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -17,6 +18,9 @@ public class LeaderboardController {
     @Autowired
     private LeaderboardService leaderboardService;
 
+    @Value("${app_config.leaderboard_file_path}")
+    private String leaderboardFilePath;
+
     @GetMapping("leaderboard")
     public Set<LeaderboardModel> getLeaderboardEntities() {
         Set<LeaderboardModel> response = this.leaderboardService.getLeaderboardSet();
@@ -26,7 +30,7 @@ public class LeaderboardController {
 
     @PostMapping("publish-score")
     public LeaderboardModel createLeaderboardEntity(@RequestBody LeaderboardModel leaderboardData) {
-        String filePath = "src/main/resources/LeaderboardData.json";
+        String filePath = leaderboardFilePath;
         // read to existing file
         try {
             fileIOService.appendFile(filePath, leaderboardData);

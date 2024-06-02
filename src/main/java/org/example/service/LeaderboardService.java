@@ -4,6 +4,7 @@ import org.example.config.Constants;
 import org.example.model.LeaderboardModel;
 import org.example.repository.LeaderboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -13,10 +14,11 @@ public class LeaderboardService {
     @Autowired
     private LeaderboardRepository leaderboardRepository;
 
-    private final long leaderboardMaxCount = 5;
+    @Value("${app_config.leaderboard_top5}")
+    private long leaderboardMaxCount;
 
     public LeaderboardModel addElement(LeaderboardModel inputData) {
-        if (isLeaderboardCountMax() == false) {
+        if (!isLeaderboardCountMax()) {
             leaderboardRepository.addEntity(inputData);
         }
         else {

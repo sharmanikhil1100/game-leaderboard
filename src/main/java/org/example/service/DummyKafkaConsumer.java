@@ -3,6 +3,7 @@ package org.example.service;
 import com.google.gson.Gson;
 import org.example.model.LeaderboardModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class DummyKafkaConsumer<T> {
-
     @Autowired
     private FileIOService fileIOService;
 
     @Autowired
     private LeaderboardService leaderboardService;
+
+    @Value("${app_config.leaderboard_file_path}")
+    private String leaderboardFilePath;
 
     public DummyKafkaConsumer() {
         start();
@@ -31,7 +34,7 @@ public class DummyKafkaConsumer<T> {
         Runnable task = () -> {
             try {
                 Gson gson = new Gson();
-                String filePath = "src/main/resources/LeaderboardData.json";
+                String filePath = leaderboardFilePath;
                 List<LeaderboardModel> leaderboardModelList = this.fileIOService.readFile(filePath);
 
                 if (leaderboardModelList != null) {
