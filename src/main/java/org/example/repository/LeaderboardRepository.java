@@ -5,11 +5,12 @@ import org.example.model.LeaderboardModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.Set;
 
+@Repository
 public class LeaderboardRepository {
     @Autowired
     private RedisTemplate<String, LeaderboardModel> redisTemplate;
@@ -17,8 +18,8 @@ public class LeaderboardRepository {
     @Value("leaderboard_key")
     private String leaderboardKey;
 
-    public void addEntity(LeaderboardModel inputData) {
-        this.redisTemplate.opsForZSet().add("leaderboard", inputData, inputData.getScore());
+    public Boolean addEntity(LeaderboardModel inputData) {
+        return this.redisTemplate.opsForZSet().add("leaderboard", inputData, inputData.getScore());
     }
 
     public Set<LeaderboardModel> getAll(Constants order) {
@@ -53,7 +54,7 @@ public class LeaderboardRepository {
         Optional<LeaderboardModel> element = this.peekSet(Constants.REVERSE_RANGE);
 
         if (element.isPresent()) {
-            this.redisTemplate.opsForZSet().remove("leaderboard", element);
+            this.redisTemplate.opsForZSet().remove("leaderboard", element.get());
         }
     }
 }

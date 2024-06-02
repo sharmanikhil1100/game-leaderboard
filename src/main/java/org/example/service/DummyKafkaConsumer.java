@@ -16,6 +16,9 @@ public class DummyKafkaConsumer<T> {
     @Autowired
     private FileIOService fileIOService;
 
+    @Autowired
+    private LeaderboardService leaderboardService;
+
     public DummyKafkaConsumer() {
         start();
     }
@@ -24,17 +27,17 @@ public class DummyKafkaConsumer<T> {
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     public void start() {
-        System.out.println("Executor starting...");
+        System.out.println("Adding scores to the leaderboard...");
         Runnable task = () -> {
             try {
                 Gson gson = new Gson();
                 String filePath = "src/main/resources/LeaderboardData.json";
                 List<LeaderboardModel> leaderboardModelList = this.fileIOService.readFile(filePath);
+
                 if (leaderboardModelList != null) {
-                    leaderboardModelList.forEach((row) -> {
-                        System.out.println(gson.toJson(row));
-                    });
-                    // now we must send this data to redis
+                    for (LeaderboardModel row: leaderboardModelList) {
+                        this.leaderboardService.addElement(row);
+                    }
                 }
 
                 fileIOService.deleteFile(filePath);
@@ -44,6 +47,6 @@ public class DummyKafkaConsumer<T> {
             }
         };
 
-        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 }

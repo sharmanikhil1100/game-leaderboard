@@ -2,11 +2,11 @@ package org.example.controller;
 
 import org.example.model.LeaderboardModel;
 import org.example.service.FileIOService;
+import org.example.service.LeaderboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -15,13 +15,14 @@ public class LeaderboardController {
     @Autowired
     private FileIOService fileIOService;
 
-    @GetMapping("leaderboard")
-    public List<LeaderboardModel> getLeaderboardEntities() {
-        LeaderboardModel data = new LeaderboardModel();
-        List<LeaderboardModel> responseData = new ArrayList<>();
-        responseData.add(data);
+    @Autowired
+    private LeaderboardService leaderboardService;
 
-        return responseData;
+    @GetMapping("leaderboard")
+    public Set<LeaderboardModel> getLeaderboardEntities() {
+        Set<LeaderboardModel> response = this.leaderboardService.getLeaderboardSet();
+
+        return response;
     }
 
     @PostMapping("publish-score")
@@ -40,6 +41,5 @@ public class LeaderboardController {
 
         return leaderboardData;
     }
-
 
 }
