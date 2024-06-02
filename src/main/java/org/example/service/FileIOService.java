@@ -3,6 +3,8 @@ package org.example.service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.example.model.LeaderboardModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
@@ -14,7 +16,8 @@ import java.util.List;
 
 @Service
 public class FileIOService {
-    //TODO: can keep a common file path name and not pass in params
+    private final Logger logger = LoggerFactory.getLogger(FileIOService.class);
+
     public List<LeaderboardModel> readFile(String filePath) {
         Gson gson = new Gson();
 
@@ -27,6 +30,7 @@ public class FileIOService {
 
             return data;
         } catch (IOException e) {
+            logger.info(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -46,6 +50,7 @@ public class FileIOService {
             fileWriter = new FileWriter(filePath);
             gson.toJson(data, fileWriter);
         } catch (IOException e) {
+            logger.info(e.getMessage());
             throw new RuntimeException(e);
         } finally {
             try {
@@ -54,6 +59,7 @@ public class FileIOService {
                     fileWriter.close();
                 }
             } catch (IOException e) {
+                logger.info(e.getMessage());
                 throw new RuntimeException(e);
             }
         }
@@ -66,6 +72,7 @@ public class FileIOService {
             fileWriter = new FileWriter(filePath);
             fileWriter.write("");
         } catch (IOException e) {
+            logger.info(e.getMessage());
             throw new RuntimeException(e);
         } finally {
             try {
@@ -74,6 +81,7 @@ public class FileIOService {
                     fileWriter.close();
                 }
             } catch (IOException e) {
+                logger.info(e.getMessage());
                 throw new RuntimeException(e);
             }
         }

@@ -10,6 +10,8 @@ import java.io.Serializable;
 public class LeaderboardModel implements Serializable {
     private String gameId;
     private String userId;
+    // can be fetched from database
+    private String username;
     private double score;
     private long rank;
 }

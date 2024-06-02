@@ -9,5 +9,5 @@ server:
 
 app_config:
   leaderboard_file_path: "src/main/resources/LeaderboardData.json"
-  leaderboard_key: "leaderboard"
-  leaderboard_top5: 5
+  redis_leaderboard_key: "leaderboard"
+  leaderboard_size: 5
