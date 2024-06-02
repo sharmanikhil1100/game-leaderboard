@@ -33,16 +33,11 @@ public class FileIOService {
 
     public void appendFile(String filePath, LeaderboardModel inputData) {
         Gson gson = new Gson();
-
         String contents = null;
         FileWriter fileWriter = null;
+
         try {
-            //TODO: use readFile function
-            contents = new String(Files.readAllBytes(Paths.get(filePath)));
-
-            List<LeaderboardModel> data = gson.fromJson(contents, new TypeToken<List<LeaderboardModel>>() {
-            }.getType());
-
+            List<LeaderboardModel> data = readFile(filePath);
             if (data == null) {
                 data = new ArrayList<>();
             }

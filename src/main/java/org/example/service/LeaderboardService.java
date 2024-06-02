@@ -13,7 +13,7 @@ public class LeaderboardService {
     @Autowired
     private LeaderboardRepository leaderboardRepository;
 
-    private final long leaderBoardMaxCount = 5;
+    private final long leaderboardMaxCount = 5;
 
     public LeaderboardModel addElement(LeaderboardModel inputData) {
         if (isLeaderboardCountMax() == false) {
@@ -36,6 +36,6 @@ public class LeaderboardService {
     }
 
     public Boolean isLeaderboardCountMax() {
-        return this.leaderboardRepository.getCount() >= leaderBoardMaxCount;
+        return this.leaderboardRepository.getCount() >= leaderboardMaxCount;
     }
 }

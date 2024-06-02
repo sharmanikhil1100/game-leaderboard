@@ -7,6 +7,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LeaderboardMain {
     public static void main(String[] args) {
         SpringApplication.run(LeaderboardMain.class, args);
-        System.out.println("Hello world!");
     }
 }

@@ -11,7 +11,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api")
 public class LeaderboardController {
-
     @Autowired
     private FileIOService fileIOService;
 
@@ -27,10 +26,6 @@ public class LeaderboardController {
 
     @PostMapping("publish-score")
     public LeaderboardModel createLeaderboardEntity(@RequestBody LeaderboardModel leaderboardData) {
-
-        // this will be updated
-        //leaderboardData.setRank(1);
-
         String filePath = "src/main/resources/LeaderboardData.json";
         // read to existing file
         try {
