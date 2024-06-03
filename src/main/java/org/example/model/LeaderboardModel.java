@@ -15,6 +15,15 @@ public class LeaderboardModel implements Serializable {
     private String username;
     private double score;
 
+    public LeaderboardModel() {}
+
+    public LeaderboardModel(String gameId, String userId, String username, double score) {
+        this.gameId = gameId;
+        this.userId = userId;
+        this.username = username;
+        this.score = score;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
