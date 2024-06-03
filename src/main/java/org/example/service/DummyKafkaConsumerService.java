@@ -46,6 +46,7 @@ public class DummyKafkaConsumerService {
                 if (leaderboardModelList != null) {
                     for (LeaderboardModel row: leaderboardModelList) {
                         // only add registered users
+                        // TODO: add User id as redis key in session for consecutive fetches
                         Optional<User> user = userService.fetchById(row.getUserId());
                         if (user.isPresent()) {
                             // add leaderboard entity to redis SortedSet
