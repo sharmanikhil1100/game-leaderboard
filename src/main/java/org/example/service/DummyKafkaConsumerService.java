@@ -22,6 +22,9 @@ public class DummyKafkaConsumerService {
     @Autowired
     private LeaderboardService leaderboardService;
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @Value("${app_config.leaderboard_file_path}")
     private String leaderboardFilePath;
 
@@ -40,8 +43,11 @@ public class DummyKafkaConsumerService {
 
                 if (leaderboardModelList != null) {
                     for (LeaderboardModel row: leaderboardModelList) {
-                        // add leaderboard entity to redis SortedSet
-                        leaderboardService.updateRedisLeaderboard(row);
+                        // only add registered users
+                        if (userService.fetchById(row.getUserId()).isPresent()) {
+                            // add leaderboard entity to redis SortedSet
+                            leaderboardService.updateRedisLeaderboard(row);
+                        }
                     }
                     fileIOService.deleteFile(leaderboardFilePath);
                 }

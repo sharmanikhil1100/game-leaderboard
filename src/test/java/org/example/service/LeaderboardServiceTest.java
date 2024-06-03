@@ -36,7 +36,7 @@ public class LeaderboardServiceTest {
 
     @Test
     void testUpdateRedisLeaderboard_whenLeaderboardIsNotFull() {
-        LeaderboardModel model = new LeaderboardModel("1", "3", "Nikhil", 642.0);
+        LeaderboardModel model = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
 
         when(leaderboardRepository.getLeaderboardSize()).thenReturn(-1L);
         when(leaderboardRepository.addEntity(model)).thenReturn(true);
@@ -48,8 +48,8 @@ public class LeaderboardServiceTest {
 
     @Test
     void testUpdateRedisLeaderboard_whenLeaderboardIsFullAndModelIsEligible() {
-        LeaderboardModel model = new LeaderboardModel("1", "3", "Nikhil", 642.0);
-        LeaderboardModel lowestModel = new LeaderboardModel("2", "4", "John", 600.0);
+        LeaderboardModel model = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
+        LeaderboardModel lowestModel = new LeaderboardModel(2L, 4L, "John", 600.0);
 
         when(leaderboardRepository.getLeaderboardSize()).thenReturn(5L);
         when(leaderboardRepository.peekSet(Constants.REVERSE_RANGE)).thenReturn(Optional.of(lowestModel));
@@ -63,8 +63,8 @@ public class LeaderboardServiceTest {
 
     @Test
     void testUpdateRedisLeaderboard_whenLeaderboardIsFullAndModelIsNotEligible() {
-        LeaderboardModel model = new LeaderboardModel("1", "3", "Nikhil", 642.0);
-        LeaderboardModel lowestModel = new LeaderboardModel("2", "4", "John", 650.0);
+        LeaderboardModel model = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
+        LeaderboardModel lowestModel = new LeaderboardModel(2L, 4L, "John", 650.0);
 
         when(leaderboardRepository.getLeaderboardSize()).thenReturn(5L);
         when(leaderboardRepository.peekSet(Constants.REVERSE_RANGE)).thenReturn(Optional.of(lowestModel));
@@ -77,7 +77,7 @@ public class LeaderboardServiceTest {
 
     @Test
     void testGetLeaderboard() {
-        Set<LeaderboardModel> expectedSet = Collections.singleton(new LeaderboardModel("1", "3", "Nikhil", 642.0));
+        Set<LeaderboardModel> expectedSet = Collections.singleton(new LeaderboardModel(1L, 3L, "Nikhil", 642.0));
 
         when(leaderboardRepository.getAll(Constants.REVERSE_RANGE)).thenReturn(expectedSet);
 

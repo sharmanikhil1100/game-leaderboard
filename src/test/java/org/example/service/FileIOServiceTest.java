@@ -42,11 +42,7 @@ public class FileIOServiceTest {
         Files.write(Paths.get(filePath), jsonContent.getBytes());
 
         List<LeaderboardModel> expectedData = new ArrayList<>();
-        LeaderboardModel leaderboardData = new LeaderboardModel();
-        leaderboardData.setGameId("1");
-        leaderboardData.setUserId("3");
-        leaderboardData.setUsername("Nikhil");
-        leaderboardData.setScore(642.00);
+        LeaderboardModel leaderboardData = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
         expectedData.add(leaderboardData);
 
         List<LeaderboardModel> actualData = fileIOService.readFile(filePath);
@@ -66,11 +62,7 @@ public class FileIOServiceTest {
     @Test
     void testAppendFile_withValidData() throws IOException {
         String filePath = "src/test/resources/test.json";
-        LeaderboardModel leaderboardData = new LeaderboardModel();
-        leaderboardData.setGameId("1");
-        leaderboardData.setUserId("3");
-        leaderboardData.setUsername("Nikhil");
-        leaderboardData.setScore(642.00);
+        LeaderboardModel leaderboardData = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
 
         List<LeaderboardModel> initialData = new ArrayList<>();
 

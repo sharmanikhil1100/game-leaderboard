@@ -9,15 +9,15 @@ import java.util.Objects;
 @Getter
 @Setter
 public class LeaderboardModel implements Serializable {
-    private String gameId;
-    private String userId;
+    private Long gameId;
+    private Long userId;
     // can be fetched from database
     private String username;
     private double score;
 
     public LeaderboardModel() {}
 
-    public LeaderboardModel(String gameId, String userId, String username, double score) {
+    public LeaderboardModel(Long gameId, Long userId, String username, double score) {
         this.gameId = gameId;
         this.userId = userId;
         this.username = username;

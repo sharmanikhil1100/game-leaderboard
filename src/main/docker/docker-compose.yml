@@ -14,5 +14,17 @@ services:
       REDIS_USERNAME: root
       REDIS_PASSWORD: root
 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: leaderboard_service
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
 volumes:
   redis_data:
+  mysql_data:
