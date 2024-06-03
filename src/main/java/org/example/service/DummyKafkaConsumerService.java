@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.LeaderboardModel;
+import org.example.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,9 +46,16 @@ public class DummyKafkaConsumerService {
                 if (leaderboardModelList != null) {
                     for (LeaderboardModel row: leaderboardModelList) {
                         // only add registered users
-                        if (userService.fetchById(row.getUserId()).isPresent()) {
+                        Optional<User> user = userService.fetchById(row.getUserId());
+                        if (user.isPresent()) {
                             // add leaderboard entity to redis SortedSet
                             leaderboardService.updateRedisLeaderboard(row);
+
+                            // update high score in User table
+                            if (row.getScore() > user.get().getHighScore()) {
+                                user.get().setHighScore(row.getScore());
+                                userService.saveUser(user.get());
+                            }
                         }
                     }
                     fileIOService.deleteFile(leaderboardFilePath);

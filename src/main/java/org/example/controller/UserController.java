@@ -5,10 +5,9 @@ import org.example.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -17,6 +16,11 @@ public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @GetMapping("user")
+    public List<User> getUsers() {
+        return userService.fetchUserList();
+    }
 
     @PostMapping("user")
     public void addUser(@RequestBody User userData) {
