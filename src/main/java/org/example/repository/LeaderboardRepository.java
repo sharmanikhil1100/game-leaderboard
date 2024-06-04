@@ -33,10 +33,10 @@ public class LeaderboardRepository {
 
     public Optional<LeaderboardModel> peekSet(Constants order) {
         if (order == Constants.RANGE) { // get max element
-            return redisTemplate.opsForZSet().reverseRange(leaderboardKey, 0, 1).stream().findFirst();
+            return redisTemplate.opsForZSet().reverseRange(leaderboardKey, 0, 0).stream().findFirst();
         }
         else { // get min element
-            return redisTemplate.opsForZSet().range(leaderboardKey, 0, 1).stream().findFirst();
+            return redisTemplate.opsForZSet().range(leaderboardKey, 0, 0).stream().findFirst();
         }
     }
 
@@ -45,10 +45,6 @@ public class LeaderboardRepository {
     }
 
     public void popSet() {
-        Optional<LeaderboardModel> element = peekSet(Constants.REVERSE_RANGE);
-
-        if (element.isPresent()) {
-            redisTemplate.opsForZSet().remove(leaderboardKey, element.get());
-        }
+        redisTemplate.opsForZSet().removeRange(leaderboardKey, 0, 0);
     }
 }
