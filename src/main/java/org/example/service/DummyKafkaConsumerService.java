@@ -39,35 +39,37 @@ public class DummyKafkaConsumerService {
 
     private void startConsumer() {
         logger.info("Starting cronjob to add scores to leaderboard from LeaderboardData.json file...");
-        Runnable task = () -> {
-            try {
-                List<LeaderboardModel> leaderboardModelList = fileIOService.readFile(leaderboardFilePath);
-
-                if (leaderboardModelList != null) {
-                    for (LeaderboardModel row: leaderboardModelList) {
-                        // only add registered users
-                        // TODO: add User id as redis key in session for consecutive fetches
-                        Optional<User> user = userService.fetchById(row.getUserId());
-                        if (user.isPresent()) {
-                            // add leaderboard entity to redis SortedSet
-                            leaderboardService.updateRedisLeaderboard(row);
-
-                            // update high score in User table
-                            if (row.getScore() > user.get().getHighScore()) {
-                                user.get().setHighScore(row.getScore());
-                                userService.saveUser(user.get());
-                            }
-                        }
-                    }
-                    fileIOService.deleteFile(leaderboardFilePath);
-                }
-            }
-            catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        };
+        Runnable task = this::uploadScoreToLeaderboard;
 
         // cron runs every 1 second to read LeaderboardData file changes
         executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void uploadScoreToLeaderboard() {
+        try {
+            List<LeaderboardModel> leaderboardModelList = fileIOService.readFile(leaderboardFilePath);
+
+            if (leaderboardModelList != null) {
+                for (LeaderboardModel row: leaderboardModelList) {
+                    // TODO: add User id as redis key in session for consecutive fetches
+                    // only add registered users
+                    Optional<User> user = userService.fetchById(row.getUserId());
+                    if (user.isPresent()) {
+                        // add leaderboard entity to redis SortedSet
+                        leaderboardService.updateRedisLeaderboard(row);
+
+                        // update high score in User table
+                        if (row.getScore() > user.get().getHighScore()) {
+                            user.get().setHighScore(row.getScore());
+                            userService.saveUser(user.get());
+                        }
+                    }
+                }
+                fileIOService.deleteFile(leaderboardFilePath);
+            }
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 }
