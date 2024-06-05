@@ -4,14 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
 @Setter
 public class LeaderboardModel implements Serializable {
     private Long gameId;
+    private String createdAt;
     private Long userId;
-    // can be fetched from database
     private String username;
     private double score;
 
@@ -33,5 +35,11 @@ public class LeaderboardModel implements Serializable {
                 Objects.equals(gameId, that.gameId) &&
                 Objects.equals(userId, that.userId) &&
                 Objects.equals(username, that.username);
+    }
+
+    public String currentDate() {
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(new Date());
     }
 }

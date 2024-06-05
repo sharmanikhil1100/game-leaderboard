@@ -44,7 +44,11 @@ public class LeaderboardRepository {
         return redisTemplate.opsForZSet().count(leaderboardKey, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    public void popSet() {
-        redisTemplate.opsForZSet().removeRange(leaderboardKey, 0, 0);
+    public Long remove (LeaderboardModel leaderboardModel) {
+        return redisTemplate.opsForZSet().remove(leaderboardKey, leaderboardModel);
+    }
+
+    public Long popSet() {
+        return redisTemplate.opsForZSet().removeRange(leaderboardKey, 0, 0);
     }
 }
