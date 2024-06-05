@@ -47,6 +47,33 @@ public class LeaderboardServiceTest {
     }
 
     @Test
+    public void testUpdateRedisLeaderboard_WhenLeaderboardIsNotFullAndSameUserScoreWithNewDate() {
+        LeaderboardModel newEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-02");
+        LeaderboardModel existingEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-01");
+
+        when(leaderboardRepository.getAll(Constants.REVERSE_RANGE)).thenReturn(Set.of(existingEntry));
+        when(leaderboardRepository.getLeaderboardSize()).thenReturn(-1L);
+
+        leaderboardService.updateRedisLeaderboard(newEntry);
+
+        verify(leaderboardRepository, times(1)).remove(existingEntry);
+        verify(leaderboardRepository, times(1)).addEntity(newEntry);
+    }
+
+    @Test
+    public void testUpdateRedisLeaderboard_WhenLeaderboardIsNotFullAndSameUserScoreWithOldDate() {
+        LeaderboardModel newEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-01");
+        LeaderboardModel existingEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-02");
+
+        when(leaderboardRepository.getAll(Constants.REVERSE_RANGE)).thenReturn(Set.of(existingEntry));
+        when(leaderboardRepository.getLeaderboardSize()).thenReturn(-1L);
+
+        leaderboardService.updateRedisLeaderboard(newEntry);
+
+        verify(leaderboardRepository, times(0)).addEntity(newEntry);
+    }
+
+    @Test
     void testUpdateRedisLeaderboard_whenLeaderboardIsFullAndModelIsEligible() {
         LeaderboardModel model = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
         LeaderboardModel lowestModel = new LeaderboardModel(2L, 4L, "John", 600.0);
@@ -60,6 +87,32 @@ public class LeaderboardServiceTest {
         verify(leaderboardRepository, times(1)).addEntity(model);
         verify(leaderboardRepository, times(1)).popSet();
     }
+
+    @Test
+    public void testUpdateRedisLeaderboard_WhenSameUserScoreWithNewDate() {
+        LeaderboardModel newEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-02");
+        LeaderboardModel existingEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-01");
+        when(leaderboardRepository.getAll(Constants.REVERSE_RANGE)).thenReturn(Set.of(existingEntry));
+        when(leaderboardRepository.peekSet(Constants.REVERSE_RANGE)).thenReturn(Optional.of(existingEntry));
+
+        leaderboardService.updateRedisLeaderboard(newEntry);
+
+        verify(leaderboardRepository, times(1)).remove(existingEntry);
+        verify(leaderboardRepository, times(1)).addEntity(newEntry);
+    }
+
+    @Test
+    public void testUpdateRedisLeaderboard_WhenSameUserScoreWithOldDate() {
+        LeaderboardModel newEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-01");
+        LeaderboardModel existingEntry = new LeaderboardModel(1L, 1L, "Nikhil", 100.0, "2024-01-02");
+        when(leaderboardRepository.getAll(Constants.REVERSE_RANGE)).thenReturn(Set.of(existingEntry));
+        when(leaderboardRepository.peekSet(Constants.REVERSE_RANGE)).thenReturn(Optional.of(existingEntry));
+
+        leaderboardService.updateRedisLeaderboard(newEntry);
+
+        verify(leaderboardRepository, times(0)).addEntity(newEntry);
+    }
+
 
     @Test
     void testUpdateRedisLeaderboard_whenLeaderboardIsFullAndModelIsNotEligible() {

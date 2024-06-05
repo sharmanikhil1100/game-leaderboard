@@ -63,10 +63,9 @@ public class LeaderboardService {
             if (isSameUserScorePresent.getSecond()) {
                 LeaderboardModel pastUserScore = isSameUserScorePresent.getFirst();
                 if (Helper.isNewDayAfter(pastUserScore.getCreatedAt(), leaderboardModel.getCreatedAt())) {
-                    leaderboardRepository.addEntity(leaderboardModel);
-
                     // replace old score in leaderboard with updated timestamp
                     leaderboardRepository.remove(pastUserScore);
+                    leaderboardRepository.addEntity(leaderboardModel);
                     logger.info("Leaderboard successfully updated by userId: {} with latest score: {} (Leaderboard Size <= 5)",
                             leaderboardModel.getUserId(), leaderboardModel.getScore());
                 }
