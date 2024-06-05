@@ -37,6 +37,10 @@ public class DummyKafkaConsumerService {
     // In the dummy solution we can solve for concurrency problem where multiple thread try to access same file
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
+    /**
+     * This cronjob runs and processes POST /api/publish-score data every 1 second.
+     * This is kind of a simulation of kafka consumer in production
+     */
     private void startConsumer() {
         logger.info("Starting cronjob to add scores to leaderboard from LeaderboardData.json file...");
         Runnable task = this::uploadScoreToLeaderboard;
@@ -45,13 +49,17 @@ public class DummyKafkaConsumerService {
         executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Reads file data.
+     * Checks if the userId in payload is registered.
+     * Calls updateRedisLeaderboard() of LeaderboardService class and updates the Leaderboard(Redis)
+     */
     private void uploadScoreToLeaderboard() {
         try {
             List<LeaderboardModel> leaderboardModelList = fileIOService.readFile(leaderboardFilePath);
 
             if (leaderboardModelList != null) {
                 for (LeaderboardModel row: leaderboardModelList) {
-                    // TODO: add User id as redis key in session for consecutive fetches
                     // only add registered users
                     Optional<User> user = userService.fetchById(row.getUserId());
                     if (user.isPresent()) {

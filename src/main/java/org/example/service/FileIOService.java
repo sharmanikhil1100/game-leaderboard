@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 public class FileIOService {
+
     private final Logger logger = LoggerFactory.getLogger(FileIOService.class);
 
     public List<LeaderboardModel> readFile(String filePath) {

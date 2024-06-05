@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Repository
 public class LeaderboardRepository {
+
     @Autowired
     private RedisTemplate<String, LeaderboardModel> redisTemplate;
 
@@ -23,19 +24,23 @@ public class LeaderboardRepository {
     }
 
     public Set<LeaderboardModel> getAll(Constants order) {
-        if (order == Constants.RANGE) { // ascending order
+        // ascending order
+        if (order == Constants.RANGE) {
             return redisTemplate.opsForZSet().range(leaderboardKey, 0, -1);
         }
-        else { // descending order
+        // descending order
+        else {
             return redisTemplate.opsForZSet().reverseRange(leaderboardKey, 0, -1);
         }
     }
 
     public Optional<LeaderboardModel> peekSet(Constants order) {
-        if (order == Constants.RANGE) { // get max element
+        // get max element
+        if (order == Constants.RANGE) {
             return redisTemplate.opsForZSet().reverseRange(leaderboardKey, 0, 0).stream().findFirst();
         }
-        else { // get min element
+        // get min element
+        else {
             return redisTemplate.opsForZSet().range(leaderboardKey, 0, 0).stream().findFirst();
         }
     }

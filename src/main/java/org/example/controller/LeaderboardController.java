@@ -14,6 +14,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api")
 public class LeaderboardController {
+
     private final Logger logger = LoggerFactory.getLogger(LeaderboardController.class);
 
     @Autowired

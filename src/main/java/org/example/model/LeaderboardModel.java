@@ -26,6 +26,14 @@ public class LeaderboardModel implements Serializable {
         this.score = score;
     }
 
+    public LeaderboardModel(Long gameId, Long userId, String username, double score, String createdAt) {
+        this.gameId = gameId;
+        this.createdAt = createdAt;
+        this.userId = userId;
+        this.username = username;
+        this.score = score;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

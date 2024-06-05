@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DBConnectionConfig {
+
     @Value("${spring.datasource.url}")
     private String url;
 

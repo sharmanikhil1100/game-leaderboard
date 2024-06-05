@@ -15,29 +15,34 @@ import java.util.Set;
 
 @Service
 public class LeaderboardService {
+
     private final Logger logger = LoggerFactory.getLogger(LeaderboardService.class);
 
     @Autowired
     private LeaderboardRepository leaderboardRepository;
 
+    // Can be configured to maintain any number of top entries in the leaderboard
     @Value("${app_config.leaderboard_size}")
     private long leaderboardMaxCount;
 
     /**
-     *
-     * @param leaderboardModel
+     * @param leaderboardModel new user score entry
+     * Updates new eligible high score in the redis Sorted set data structure. It maintains the size of Set to be 5
      */
     public void updateRedisLeaderboard(LeaderboardModel leaderboardModel) {
         // if leaderboard size is >=5, then only add eligible entity to leaderboard and maintain size = 5
         if (isLeaderboardCountMax()) {
             if (leaderboardModel.getScore() >= leaderboardRepository.peekSet(Constants.REVERSE_RANGE).get().getScore()) {
+                // check if the user has done same high score in the past
                 Pair<LeaderboardModel, Boolean> isSameUserScorePresent = Helper.isSameUserScoreInLeaderboard(leaderboardModel, leaderboardRepository.getAll(Constants.REVERSE_RANGE));
 
                 if (isSameUserScorePresent.getSecond()) {
-                    Boolean isNewDate = Helper.isNewDayAfter(isSameUserScorePresent.getFirst().getCreatedAt(), leaderboardModel.getCreatedAt());
+                    LeaderboardModel pastUserScore = isSameUserScorePresent.getFirst();
+                    // handle the edge case which should take care of only updating the latest timestamp high score
+                    Boolean isNewDate = Helper.isNewDayAfter(pastUserScore.getCreatedAt(), leaderboardModel.getCreatedAt());
                     if (isNewDate) {
                         // replace old score in leaderboard with updated timestamp
-                        leaderboardRepository.remove(isSameUserScorePresent.getFirst());
+                        leaderboardRepository.remove(pastUserScore);
                         leaderboardRepository.addEntity(leaderboardModel);
                         logger.info("Leaderboard successfully updated by userId: {} with latest score: {}",
                                 leaderboardModel.getUserId(), leaderboardModel.getScore());
@@ -56,11 +61,12 @@ public class LeaderboardService {
 
             // if same user score present in leaderboard, then keep only latest date score
             if (isSameUserScorePresent.getSecond()) {
-                if (Helper.isNewDayAfter(isSameUserScorePresent.getFirst().getCreatedAt(), leaderboardModel.getCreatedAt())) {
+                LeaderboardModel pastUserScore = isSameUserScorePresent.getFirst();
+                if (Helper.isNewDayAfter(pastUserScore.getCreatedAt(), leaderboardModel.getCreatedAt())) {
                     leaderboardRepository.addEntity(leaderboardModel);
 
                     // replace old score in leaderboard with updated timestamp
-                    leaderboardRepository.remove(isSameUserScorePresent.getFirst());
+                    leaderboardRepository.remove(pastUserScore);
                     logger.info("Leaderboard successfully updated by userId: {} with latest score: {} (Leaderboard Size <= 5)",
                             leaderboardModel.getUserId(), leaderboardModel.getScore());
                 }
@@ -73,10 +79,18 @@ public class LeaderboardService {
         }
     }
 
+    /**
+     * Return Top 5 entries from Redis Sorted set
+     * @return Set<LeaderboardModel>
+     */
     public Set<LeaderboardModel> getLeaderboard() {
         return leaderboardRepository.getAll(Constants.REVERSE_RANGE);
     }
 
+    /**
+     * Based on configured value from yml file, it returns whether the size of Redis sorted set is within the max limit
+     * @return Boolean
+     */
     private Boolean isLeaderboardCountMax() {
         return leaderboardRepository.getLeaderboardSize() >= leaderboardMaxCount;
     }
