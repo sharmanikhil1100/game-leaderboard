@@ -35,7 +35,7 @@ public class FileIOServiceTest {
     }
 
     @Test
-    void testReadFile_withValidData() throws IOException {
+    void testReadFile_WithValidData() throws IOException {
         String filePath = "src/test/resources/test.json";
         String jsonContent = "[{\"gameId\":\"1\",\"userId\":\"3\",\"username\":\"Nikhil\",\"score\":642.0,\"rank\":0}]";
 
@@ -53,14 +53,14 @@ public class FileIOServiceTest {
     }
 
     @Test
-    void testReadFile_withIOException() throws IOException {
+    void testReadFile_WithIOException() throws IOException {
         String filePath = "path/to/nowhere.json";
 
         assertThrows(RuntimeException.class, () -> fileIOService.readFile(filePath));
     }
 
     @Test
-    void testAppendFile_withValidData() throws IOException {
+    void testAppendFile_WithValidData() throws IOException {
         String filePath = "src/test/resources/test.json";
         LeaderboardModel leaderboardData = new LeaderboardModel(1L, 3L, "Nikhil", 642.0);
 
@@ -80,7 +80,7 @@ public class FileIOServiceTest {
     }
 
     @Test
-    void testAppendFile_withIOException() throws IOException {
+    void testAppendFile_WithIOException() throws IOException {
         String filePath = "path/to/nowhere.json";
         LeaderboardModel leaderboardData = new LeaderboardModel();
 
